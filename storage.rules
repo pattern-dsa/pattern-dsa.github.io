@@ -1,0 +1,28 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function signedIn() { return request.auth != null; }
+    // Email/password users must have verified their email; Google/GitHub users are unaffected.
+    function verified() {
+      return signedIn()
+        && (request.auth.token.firebase.sign_in_provider != 'password'
+            || request.auth.token.email_verified == true);
+    }
+    function isOwner(uid) { return verified() && request.auth.uid == uid; }
+
+    // One profile image per user, at a path tied to their Auth UID. Images only, under 2 MB.
+    match /profile-images/{uid}/avatar {
+      allow read: if isOwner(uid);
+      allow create, update: if isOwner(uid)
+        && request.resource.size < 2 * 1024 * 1024
+        && request.resource.contentType.matches('image/(jpeg|png|webp)');
+      allow delete: if isOwner(uid);
+    }
+
+    // Everything else is closed.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
