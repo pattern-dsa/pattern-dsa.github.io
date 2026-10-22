@@ -1,0 +1,2133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DSA Interview Problem Tracker</title>
+<meta name="description" content="Track 100 core DSA interview questions across 16 topics. Progress is saved in your browser.">
+<style>
+:root{
+  --bg:#f6f7f9; --surface:#fff; --text:#1b1f27; --muted:#5b6472; --line:#e1e5ea;
+  --accent:#2f6fed; --accent-ink:#fff;
+  --ns:#6b7280; --ns-bg:#eef0f3;
+  --ip:#9a5b00; --ip-bg:#fff1d6;
+  --sv:#116a3a; --sv-bg:#dcf5e6;
+  --rv:#6b3fb5; --rv-bg:#ece3fb;
+  --easy:#116a3a; --med:#9a5b00; --hard:#b42318;
+  --radius:12px; --shadow:0 1px 2px rgba(16,24,40,.06);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0f1218; --surface:#171b23; --text:#e8ebf0; --muted:#9aa4b2; --line:#2a303b;
+    --accent:#6c9cff; --accent-ink:#0b1220;
+    --ns:#a3acba; --ns-bg:#232933;
+    --ip:#f2b24c; --ip-bg:#3a2d12;
+    --sv:#58d68d; --sv-bg:#133324;
+    --rv:#b69cf0; --rv-bg:#2c2147;
+    --easy:#58d68d; --med:#f2b24c; --hard:#ff8a80;
+    --shadow:none;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--accent)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px 48px}
+header.top{padding:28px 0 8px}
+h1{font-size:clamp(1.5rem,4vw,2rem);margin:0 0 4px;letter-spacing:-.01em}
+.sub{margin:0;color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+
+/* notice */
+.notice{margin:16px 0;padding:12px 14px;border-left:4px solid var(--accent);font-size:.94rem}
+.notice strong{display:block;margin-bottom:2px}
+.notice p{margin:0}
+.warn{border-left-color:var(--hard);display:none}
+.warn.show{display:block}
+
+/* summary */
+.summary{padding:16px;margin:16px 0}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:640px){.stats{grid-template-columns:repeat(5,1fr)}}
+.stat{all:unset;box-sizing:border-box;cursor:pointer;display:block;padding:10px 12px;border-radius:10px;border:2px solid transparent;background:var(--ns-bg)}
+.stat:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.stat[aria-pressed="true"]{border-color:var(--accent)}
+.stat .n{display:block;font-size:1.6rem;font-weight:700;line-height:1.1}
+.stat .l{display:block;font-size:.82rem;color:var(--muted)}
+.stat.solved{background:var(--sv-bg)} .stat.solved .n{color:var(--sv)}
+.stat.progress{background:var(--ip-bg)} .stat.progress .n{color:var(--ip)}
+.stat.revisit{background:var(--rv-bg)} .stat.revisit .n{color:var(--rv)}
+.stat.pct{cursor:default;background:var(--ns-bg)}
+.bar{height:10px;background:var(--ns-bg);border-radius:99px;overflow:hidden;margin-top:14px}
+.bar>span{display:block;height:100%;width:0;background:var(--sv);transition:width .3s}
+.barlabel{margin:6px 0 0;font-size:.85rem;color:var(--muted)}
+
+/* controls */
+.controls{padding:14px;display:grid;gap:10px;grid-template-columns:1fr;margin-bottom:12px}
+@media(min-width:760px){.controls{grid-template-columns:2fr 1fr 1fr 1fr auto;align-items:end}}
+.field label{display:block;font-size:.8rem;font-weight:600;color:var(--muted);margin-bottom:4px}
+input[type=search],select{width:100%;min-height:44px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);font:inherit}
+input:focus-visible,select:focus-visible,button:focus-visible,.link:focus-visible{outline:3px solid var(--accent);outline-offset:1px}
+button.btn{min-height:44px;padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--text);font:inherit;font-weight:600;cursor:pointer}
+button.btn:hover{border-color:var(--accent)}
+button.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button.btn.danger{color:var(--hard)}
+.count{margin:4px 2px 10px;color:var(--muted);font-size:.9rem}
+
+/* list (table on desktop, cards on phones) */
+.list{overflow:hidden}
+.row{display:grid;gap:6px;padding:14px;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.head{display:none}
+.cell .k{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.c-title{font-weight:600}
+.c-no{color:var(--muted);font-variant-numeric:tabular-nums}
+.c-pattern{color:var(--muted);font-size:.92rem}
+.diff{font-weight:600;font-size:.9rem}
+.diff.Easy{color:var(--easy)} .diff.Medium{color:var(--med)} .diff.Hard{color:var(--hard)}
+.link{display:inline-flex;align-items:center;min-height:44px;font-weight:600;text-decoration:none}
+.link:hover{text-decoration:underline}
+.status{font-weight:600;border-width:2px}
+.row[data-status="Not Started"] .status{background:var(--ns-bg);color:var(--ns)}
+.row[data-status="In Progress"] .status{background:var(--ip-bg);color:var(--ip)}
+.row[data-status="Solved"] .status{background:var(--sv-bg);color:var(--sv)}
+.row[data-status="Revisit"] .status{background:var(--rv-bg);color:var(--rv)}
+.row[hidden]{display:none}
+.empty{padding:28px 16px;text-align:center;color:var(--muted)}
+.empty[hidden]{display:none}
+@media(max-width:899px){
+  .c-no{position:absolute;opacity:0;pointer-events:none;height:0;overflow:hidden}
+  .c-title::before{content:"#" attr(data-no) "  ";color:var(--muted);font-weight:500}
+  .c-topic{font-size:.82rem;color:var(--accent);font-weight:600}
+  .c-topic .k,.c-title .k{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .c-meta{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+}
+@media(min-width:900px){
+  .head,.row{grid-template-columns:56px 150px minmax(180px,1.6fr) minmax(180px,1.6fr) 82px 120px 140px;gap:14px;align-items:center;padding:10px 14px}
+  .head{display:grid;background:var(--ns-bg);font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);position:sticky;top:0;z-index:2;border-bottom:1px solid var(--line)}
+  .cell .k{display:none}
+  .c-meta{display:contents}
+  .c-title::before{content:none}
+}
+
+
+/* accounts */
+.topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.auth{display:flex;align-items:center;gap:8px;flex-shrink:0;padding-top:4px}
+.me{display:inline-flex;align-items:center;gap:8px;max-width:210px}
+.me .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:520px){.me .nm{display:none}}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:inline-grid;place-items:center;font-weight:700;font-size:.85rem;overflow:hidden;flex:none}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.avatar.lg{width:56px;height:56px;font-size:1.2rem}
+.sync{margin:6px 0 0;font-size:.85rem;color:var(--muted)}
+.sync.ok{color:var(--sv)} .sync.err{color:var(--hard)}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--text);padding:20px;width:min(440px,calc(100% - 32px));max-height:calc(100dvh - 32px);overflow:auto}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+dialog h2{margin:0 0 4px;font-size:1.2rem}
+dialog .lead{margin:0 0 14px;color:var(--muted);font-size:.92rem}
+.dlg-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.x{min-height:44px;min-width:44px;border:0;background:none;color:var(--muted);font-size:1.4rem;cursor:pointer;border-radius:8px}
+.stack{display:grid;gap:10px}
+.provider{display:flex;align-items:center;justify-content:center;gap:10px;width:100%}
+.or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.85rem;margin:14px 0}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+input[type=text],input[type=email],input[type=password],textarea{width:100%;min-height:44px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);font:inherit}
+textarea{min-height:84px;resize:vertical}
+input:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:1px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.linkbtn{background:none;border:0;color:var(--accent);font:inherit;cursor:pointer;padding:8px 0;text-align:left;text-decoration:underline}
+.methods{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:6px;font-size:.92rem}
+.methods li{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.hint{font-size:.82rem;color:var(--muted);margin:2px 0 0}
+.charcount{font-size:.78rem;color:var(--muted);text-align:right}
+.picbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+progress{width:100%;height:10px;accent-color:var(--accent);margin-top:8px}
+.share-box{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--bg)}
+.share-box h3{font-size:.98rem;margin:0 0 4px}
+.share-box p{margin:4px 0 10px}
+.share-link{margin-top:10px}
+.public-page{max-width:900px;margin:0 auto;padding:28px 16px 48px}
+.public-head{margin:0 0 14px}
+.public-head p{margin:0;color:var(--muted)}
+.public-card{padding:20px;margin:14px 0}
+.public-person{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.public-person h2{font-size:1.45rem;margin:0}
+.public-bio{margin:4px 0 0;color:var(--muted);white-space:pre-wrap}
+.public-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:600px){.public-stats{grid-template-columns:repeat(5,1fr)}}
+.public-stat{padding:12px;border-radius:10px;background:var(--ns-bg)}
+.public-stat strong{display:block;font-size:1.45rem;line-height:1.2}
+.public-stat span{font-size:.84rem;color:var(--muted)}
+.public-work h2{font-size:1.05rem;margin:0 0 8px}
+.public-solved{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.public-solved li{padding:10px 12px;border:1px solid var(--line);border-radius:8px}
+.public-solved a{text-decoration:none;font-weight:600}
+.public-solved a:hover{text-decoration:underline}
+.public-solved small{display:block;color:var(--muted)}
+[hidden]{display:none!important}
+
+/* data tools & help */
+.tools{padding:16px;margin-top:20px}
+.tools h2,.help h2{font-size:1.05rem;margin:0 0 6px}
+.tools p{margin:0 0 12px;color:var(--muted);font-size:.92rem}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap}
+.msg{margin-top:10px;font-size:.9rem;min-height:1.2em}
+.msg.err{color:var(--hard)} .msg.ok{color:var(--sv)}
+.help{padding:16px;margin-top:16px}
+.help h3{font-size:.95rem;margin:14px 0 4px}
+.help ol,.help ul{margin:4px 0 0;padding-left:20px;font-size:.92rem}
+.help code,.help pre{background:var(--ns-bg);border-radius:6px;font-size:.85rem}
+.help code{padding:1px 5px}
+.help pre{padding:10px;overflow:auto;margin:6px 0}
+details>summary{cursor:pointer;font-weight:700;font-size:1.05rem}
+footer{margin-top:24px;color:var(--muted);font-size:.85rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<main id="publicProfilePage" class="public-page" hidden>
+  <header class="public-head"><h1>DSA Interview Problem Tracker</h1><p>Recruiter profile</p></header>
+  <section class="card public-card" aria-labelledby="publicName">
+    <div class="public-person"><span class="avatar lg" id="publicAvatar"></span><div><h2 id="publicName">Loading profile…</h2><p class="public-bio" id="publicBio" hidden></p></div></div>
+    <div class="public-stats" id="publicStats" aria-label="Question progress">
+      <div class="public-stat"><strong id="publicSolved">0</strong><span>Solved</span></div>
+      <div class="public-stat"><strong id="publicInProgress">0</strong><span>In progress</span></div>
+      <div class="public-stat"><strong id="publicRevisit">0</strong><span>To revisit</span></div>
+      <div class="public-stat"><strong id="publicNotStarted">100</strong><span>Not started</span></div>
+      <div class="public-stat"><strong id="publicPercent">0%</strong><span>Complete</span></div>
+    </div>
+    <progress id="publicBar" max="100" value="0" aria-label="Percent of questions solved"></progress>
+    <p class="barlabel" id="publicProgressLabel">Loading question progress…</p>
+  </section>
+  <section class="card public-card public-work" id="publicWorkCard" aria-labelledby="publicWorkTitle">
+    <h2 id="publicWorkTitle">Questions marked solved</h2>
+    <p class="hint" id="publicSolvedEmpty" hidden>No questions have been marked solved yet.</p>
+    <ul class="public-solved" id="publicSolvedList"></ul>
+  </section>
+  <p class="hint">This profile is shared by its owner. Progress is self-reported in the tracker.</p>
+  <p class="msg" id="publicNotice" role="status" aria-live="polite"></p>
+</main>
+<div class="wrap">
+  <header class="top">
+    <div class="topbar">
+      <div>
+        <h1>DSA Interview Problem Tracker</h1>
+        <p class="sub">100 core questions across 16 topics to build strong interview-ready DSA pattern coverage.</p>
+      </div>
+      <div class="auth">
+        <button class="btn primary" id="signInBtn" type="button">Sign in</button>
+        <button class="btn me" id="profileBtn" type="button" hidden aria-label="Open your profile"><span class="avatar" id="meAvatar"></span><span class="nm" id="meName"></span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="card notice" role="note">
+    <strong id="noticeTitle">Your progress is saved in this browser only.</strong>
+    <p>It does <em>not</em> sync automatically from GeeksforGeeks. Solve a problem on GfG, then come back and set its status to <b>Solved</b> here. Numbers in the “#” column are tracker numbers from the workbook, not official GfG problem IDs.</p>
+    <p class="sync" id="syncState" role="status"></p>
+  </div>
+  <div id="storageWarn" class="card notice warn" role="alert">
+    <strong>Browser storage is unavailable.</strong>
+    <p>Progress will be lost when you close this tab. Use Export to save a backup file.</p>
+  </div>
+
+  <section class="card summary" aria-label="Progress summary">
+    <div class="stats" id="stats">
+      <button class="stat solved" data-filter="Solved" aria-pressed="false"><span class="n" id="nSolved">0</span><span class="l">Solved</span></button>
+      <button class="stat progress" data-filter="In Progress" aria-pressed="false"><span class="n" id="nProgress">0</span><span class="l">In Progress</span></button>
+      <button class="stat revisit" data-filter="Revisit" aria-pressed="false"><span class="n" id="nRevisit">0</span><span class="l">Revisit</span></button>
+      <button class="stat" data-filter="Not Started" aria-pressed="false"><span class="n" id="nNot">0</span><span class="l">Not Started</span></button>
+      <div class="stat pct"><span class="n" id="nPct">0%</span><span class="l">Complete</span></div>
+    </div>
+    <div class="bar" role="progressbar" aria-label="Overall completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="bar"><span></span></div>
+    <p class="barlabel" id="barLabel"></p>
+  </section>
+
+  <section class="card controls" aria-label="Search and filters">
+    <div class="field"><label for="q">Search question, topic or pattern</label>
+      <input id="q" type="search" placeholder="e.g. sliding window, Kadane, graphs" autocomplete="off"></div>
+    <div class="field"><label for="fTopic">Topic</label><select id="fTopic"></select></div>
+    <div class="field"><label for="fDiff">Difficulty</label><select id="fDiff"></select></div>
+    <div class="field"><label for="fStatus">Status</label><select id="fStatus"></select></div>
+    <button class="btn" id="clear" type="button">Clear filters</button>
+  </section>
+  <p class="count" id="count" aria-live="polite"></p>
+
+  <section class="card list" role="table" aria-label="Questions">
+    <div class="head" role="row">
+      <div role="columnheader">#</div><div role="columnheader">Topic</div><div role="columnheader">Question</div>
+      <div role="columnheader">Pattern to learn</div><div role="columnheader">Difficulty</div>
+      <div role="columnheader">GfG link</div><div role="columnheader">Status</div>
+    </div>
+    <div id="rows" role="rowgroup"></div>
+    <div class="empty" id="empty" hidden>No questions match these filters.</div>
+  </section>
+
+  <section class="card tools" aria-label="Backup and restore">
+    <h2>Back up or move your progress</h2>
+    <p>Export saves a small JSON file. Import it to restore progress in another browser or account. Importing replaces the progress currently shown (and your account’s copy, if you’re signed in).</p>
+    <div class="btnrow">
+      <button class="btn primary" id="export" type="button">Export progress (JSON)</button>
+      <button class="btn" id="importBtn" type="button">Import progress…</button>
+      <button class="btn danger" id="reset" type="button">Reset all progress</button>
+      <input type="file" id="importFile" accept="application/json,.json" class="sr" tabindex="-1">
+    </div>
+    <div class="msg" id="msg" role="status"></div>
+  </section>
+
+  <section class="card help">
+    <h2>How to use this page</h2>
+    <ol>
+      <li>Pick a question and use its GfG link (opens in a new tab).</li>
+      <li>Links labelled <b>Open GfG</b> go to a guide page — use its “Try It Yourself” link to reach the practice editor. Links labelled <b>Solve on GfG</b> go straight to the practice problem.</li>
+      <li>After solving it on GfG, set the status here. Use <b>Revisit</b> for problems you want to practise again.</li>
+      <li>Optional: <b>Sign in</b> (Google, GitHub or email) to get a profile and keep your progress across devices.</li>
+    </ol>
+    <details style="margin-top:14px"><summary>Open it locally &amp; host it</summary>
+      <h3>Open locally</h3>
+      <p style="margin:4px 0;font-size:.92rem">Save this file as <code>index.html</code> and double-click it. The tracker works without a server; <b>sign-in needs the page served over http(s)</b> (for local testing run <code>npx serve</code> in the folder and open <code>http://localhost:3000</code>). Progress is saved per browser (and per file location), so use Export/Import if you open it from a different place.</p>
+      <h3>Host as a static website</h3>
+      <ul>
+        <li><b>GitHub Pages:</b> put <code>index.html</code> in a repository → Settings → Pages → deploy from your main branch.</li>
+        <li><b>Netlify / Cloudflare Pages / Vercel:</b> drag the folder containing <code>index.html</code> into the dashboard, or connect a repo (no build command, publish directory is the root).</li>
+        <li><b>Any web host:</b> upload <code>index.html</code> to the site's public folder.</li>
+      </ul>
+      <p style="margin:6px 0 0;font-size:.92rem">Each hosting address has its own saved progress; moving to a new address means using Export, then Import.</p>
+    </details>
+    <details style="margin-top:14px"><summary>About GfG sync</summary>
+      <p style="margin:6px 0 0;font-size:.92rem">GeeksforGeeks does not document a public, permitted API for reading a user's accepted submissions, so this page does not try to read your GfG account — no scraping, no private endpoints, no logins or cookies. Completion is marked manually. The code has a small <code>integrations</code> registry so an official integration can be added later if GfG offers one.</p>
+    </details>
+  </section>
+
+  <footer>
+    Source: your DSA Interview Problem Tracker workbook. See also GfG’s
+    <a href="https://www.geeksforgeeks.org/dsa/sde-sheet-a-complete-guide-for-sde-preparation/" target="_blank" rel="noopener noreferrer">SDE Sheet</a> and
+    <a href="https://www.geeksforgeeks.org/courses/gfg-160" target="_blank" rel="noopener noreferrer">GfG 160 roadmap</a>.
+    This core set builds strong pattern coverage; continue with company-specific and advanced problems too.
+    Not affiliated with GeeksforGeeks.
+  </footer>
+</div>
+
+
+<dialog id="authDlg" aria-labelledby="authTitle">
+  <div class="dlg-head"><div><h2 id="authTitle">Sign in</h2><p class="lead" id="authLead">Keep your progress across devices. One profile per account.</p></div>
+    <button class="x" type="button" data-close aria-label="Close">×</button></div>
+  <div id="authSetup" hidden>
+    <p class="lead">Sign-in isn’t switched on for this copy of the site yet. <span id="authSetupWhy"></span> Your progress still works and is saved in this browser.</p>
+  </div>
+  <div id="authMain">
+    <div class="stack">
+      <button class="btn provider" id="gGoogle" type="button">Continue with Google</button>
+      <button class="btn provider" id="gGithub" type="button">Continue with GitHub</button>
+    </div>
+    <div class="or">or use email</div>
+    <form id="emailForm" class="stack" novalidate>
+      <div id="nameRow" hidden><label class="sr" for="authName">Name</label><input id="authName" type="text" autocomplete="name" placeholder="Your name (required)"></div>
+      <div><label class="sr" for="authEmail">Email</label><input id="authEmail" type="email" autocomplete="email" placeholder="Email" required></div>
+      <div><label class="sr" for="authPass">Password</label><input id="authPass" type="password" autocomplete="current-password" placeholder="Password (6+ characters)" required></div>
+      <div class="two">
+        <button class="btn primary" id="emailIn" type="submit">Sign in</button>
+        <button class="btn" id="emailUp" type="button">Create account</button>
+      </div>
+      <button class="linkbtn" id="forgot" type="button">Forgot password?</button>
+    </form>
+  </div>
+  <div id="authVerify" hidden>
+    <p class="lead" id="verifyLead"></p>
+    <form id="verifyForm" class="stack" novalidate>
+      <button class="btn primary" id="verifyCheck" type="submit">I clicked the link</button>
+      <button class="btn" id="verifyResend" type="button">Send verification link</button>
+      <button class="linkbtn" id="verifyOut" type="button">Use a different account (sign out)</button>
+    </form>
+  </div>
+  <div class="msg" id="authMsg" role="status"></div>
+</dialog>
+
+<dialog id="profileDlg" aria-labelledby="profTitle">
+  <div class="dlg-head"><h2 id="profTitle">Your profile</h2><button class="x" type="button" data-close aria-label="Close">×</button></div>
+  <div class="stack" style="margin-top:10px">
+    <div style="display:flex;gap:12px;align-items:center"><span class="avatar lg" id="profAvatar"></span><div style="min-width:0"><div id="profEmail" style="overflow:hidden;text-overflow:ellipsis"></div><div class="hint" id="profVerify"></div></div></div>
+    <div>
+      <div class="hint">Profile picture</div>
+      <div class="picbtns">
+        <button class="btn" id="picChange" type="button">Upload photo</button>
+        <button class="btn primary" id="picSave" type="button" hidden>Save photo</button>
+        <button class="btn" id="picCancel" type="button" hidden>Cancel</button>
+        <button class="btn danger" id="picRemove" type="button" hidden>Remove photo</button>
+        <input type="file" id="picFile" accept="image/jpeg,image/png,image/webp" class="sr" tabindex="-1">
+      </div>
+      <progress id="picProg" max="100" value="0" hidden aria-label="Upload progress"></progress>
+      <div class="hint">JPG, PNG or WebP, up to 5 MB. It is cropped to a 512×512 square.</div>
+    </div>
+    <form id="profForm" class="stack" novalidate>
+      <div><label for="profName" class="hint">Display name</label><input id="profName" type="text" maxlength="60" required></div>
+      <div><label for="profBio" class="hint">About you (optional)</label><textarea id="profBio" maxlength="300" placeholder="Target role, interview date, goals…"></textarea><div class="charcount"><span id="bioCount">0</span>/300</div></div>
+      <button class="btn primary" type="submit">Save profile</button>
+    </form>
+    <section class="share-box" aria-labelledby="shareTitle">
+      <h3 id="shareTitle">Share with recruiters</h3>
+      <p class="hint">Save your name and About section first. When sharing is on, anyone with your link can see your display name, photo, About section, and question progress. Your email and sign-in details stay private. You can turn sharing off anytime.</p>
+      <div class="btnrow">
+        <button class="btn primary" id="shareEnable" type="button">Enable profile sharing</button>
+        <button class="btn" id="shareCopy" type="button" hidden>Copy recruiter link</button>
+        <button class="btn danger" id="shareDisable" type="button" hidden>Turn off sharing</button>
+      </div>
+      <div class="share-link" id="shareLinkWrap" hidden><label class="hint" for="shareLink">Your recruiter link</label><input id="shareLink" type="text" readonly></div>
+      <p class="hint" id="shareMsg" role="status" aria-live="polite"></p>
+    </section>
+    <div><div class="hint">Sign-in methods</div><ul class="methods" id="methods"></ul></div>
+    <button class="btn danger" id="signOut" type="button">Sign out</button>
+  </div>
+  <div class="msg" id="profMsg" role="status"></div>
+</dialog>
+
+<script>
+"use strict";
+/* ---------- Data (from the workbook; n = tracker number, not a GfG ID) ---------- */
+const QUESTIONS = [
+ {
+  "n": 1,
+  "topic": "Arrays",
+  "title": "Rotate Array K Times",
+  "pattern": "In-place reversal; cyclic index mapping",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/array-rotation/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 2,
+  "topic": "Arrays",
+  "title": "Majority Element",
+  "pattern": "Boyer–Moore voting; verify the candidate",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/majority-element/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 3,
+  "topic": "Arrays",
+  "title": "Maximum Subarray Sum (Kadane)",
+  "pattern": "Best sum ending here; track the global maximum",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/largest-sum-contiguous-subarray/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 4,
+  "topic": "Arrays",
+  "title": "Next Permutation",
+  "pattern": "Find pivot and successor; reverse the suffix",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/next-permutation/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 5,
+  "topic": "Arrays",
+  "title": "Maximum Product Subarray",
+  "pattern": "Track maximum and minimum products as signs flip",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/maximum-product-subarray/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 6,
+  "topic": "Arrays",
+  "title": "Smallest Missing Positive",
+  "pattern": "Place values at matching indices in-place",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/find-the-smallest-positive-number-missing-from-an-unsorted-array/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 7,
+  "topic": "Arrays",
+  "title": "Minimum Jumps to Reach the End",
+  "pattern": "Greedy reach frontier; count minimum jumps",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/minimum-number-of-jumps-to-reach-end-of-a-given-array/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 8,
+  "topic": "Arrays",
+  "title": "Trapping Rain Water",
+  "pattern": "Two pointers with left and right maximums",
+  "difficulty": "Hard",
+  "url": "https://www.geeksforgeeks.org/dsa/trapping-rain-water/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 9,
+  "topic": "Sorting & Intervals",
+  "title": "Merge Two Sorted Arrays Without Extra Space",
+  "pattern": "Gap method over the virtual combined array",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/merge-two-sorted-arrays-o1-extra-space/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 10,
+  "topic": "Sorting & Intervals",
+  "title": "Count Inversions in an Array",
+  "pattern": "Merge sort while counting cross-inversions",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/inversion-count-in-array-using-merge-sort/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 11,
+  "topic": "Sorting & Intervals",
+  "title": "Meeting Rooms II",
+  "pattern": "Sort endpoints or sweep active meeting times",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/meeting-rooms-find-minimum-meeting-rooms/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 12,
+  "topic": "Sorting & Intervals",
+  "title": "Merge Overlapping Intervals",
+  "pattern": "Sort by start; extend the current interval",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/merging-intervals/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 13,
+  "topic": "Sorting & Intervals",
+  "title": "3Sum (Triplet Sum in Array)",
+  "pattern": "Sort, then use two pointers and skip duplicates",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/find-a-triplet-that-sum-to-a-given-value/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 14,
+  "topic": "Strings",
+  "title": "Reverse Words in a String",
+  "pattern": "Split into words and reverse their order",
+  "difficulty": "Easy",
+  "url": "https://www.geeksforgeeks.org/dsa/reverse-words-in-a-given-string/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 15,
+  "topic": "Strings",
+  "title": "Check Whether Two Strings Are Anagrams",
+  "pattern": "Compare character frequencies",
+  "difficulty": "Easy",
+  "url": "https://www.geeksforgeeks.org/dsa/check-whether-two-strings-are-anagram-of-each-other/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 16,
+  "topic": "Strings",
+  "title": "Longest Substring Without Repeating Characters",
+  "pattern": "Sliding window with last-seen positions",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/length-of-the-longest-substring-without-repeating-characters/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 17,
+  "topic": "Strings",
+  "title": "Longest Palindromic Substring",
+  "pattern": "Expand around each possible center",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/longest-palindromic-substring/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 18,
+  "topic": "Strings",
+  "title": "KMP Pattern Search",
+  "pattern": "Build the LPS prefix table and avoid rechecking",
+  "difficulty": "Hard",
+  "url": "https://www.geeksforgeeks.org/dsa/kmp-algorithm-for-pattern-searching/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 19,
+  "topic": "Strings",
+  "title": "Minimum Window Substring",
+  "pattern": "Variable window with required and matched counts",
+  "difficulty": "Hard",
+  "url": "https://www.geeksforgeeks.org/dsa/find-the-smallest-window-in-a-string-containing-all-characters-of-another-string/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 20,
+  "topic": "Hashing & Prefix Sum",
+  "title": "Two Sum (Pair with Given Sum)",
+  "pattern": "Hash complements, or use two pointers on sorted input",
+  "difficulty": "Easy",
+  "url": "https://www.geeksforgeeks.org/problems/key-pair5616/1",
+  "label": "Solve on GfG",
+  "direct": true
+ },
+ {
+  "n": 21,
+  "topic": "Hashing & Prefix Sum",
+  "title": "Count Distinct Elements in Every Window of Size K",
+  "pattern": "Sliding window with a frequency map",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/count-distinct-elements-in-every-window-of-size-k/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 22,
+  "topic": "Hashing & Prefix Sum",
+  "title": "Longest Consecutive Subsequence",
+  "pattern": "Hash set; begin only at sequence starts",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/longest-consecutive-subsequence/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 23,
+  "topic": "Hashing & Prefix Sum",
+  "title": "Count Subarrays with Sum K",
+  "pattern": "Prefix sum plus prefix-frequency map",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/number-subarrays-sum-exactly-equal-k/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 24,
+  "topic": "Hashing & Prefix Sum",
+  "title": "Longest Subarray with Sum K",
+  "pattern": "Prefix sum plus earliest index",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/longest-sub-array-sum-k/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 25,
+  "topic": "Hashing & Prefix Sum",
+  "title": "Group Anagrams Together",
+  "pattern": "Canonical key or character-frequency signature",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/given-a-sequence-of-words-print-all-anagrams-together/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 26,
+  "topic": "Binary Search",
+  "title": "Binary Search",
+  "pattern": "Maintain safe low and high boundaries",
+  "difficulty": "Easy",
+  "url": "https://www.geeksforgeeks.org/dsa/binary-search/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 27,
+  "topic": "Binary Search",
+  "title": "Search in a Sorted and Rotated Array",
+  "pattern": "Identify the sorted half and discard one side",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/search-an-element-in-a-sorted-and-pivoted-array/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 28,
+  "topic": "Binary Search",
+  "title": "First and Last Occurrence in a Sorted Array",
+  "pattern": "Lower bound and upper bound",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/find-first-and-last-positions-of-an-element-in-a-sorted-array/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 29,
+  "topic": "Binary Search",
+  "title": "Median of Two Sorted Arrays",
+  "pattern": "Binary search the partition between arrays",
+  "difficulty": "Hard",
+  "url": "https://www.geeksforgeeks.org/dsa/median-of-two-sorted-arrays-of-different-sizes/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 30,
+  "topic": "Binary Search",
+  "title": "Allocate Minimum Number of Pages",
+  "pattern": "Binary search the answer with a feasibility check",
+  "difficulty": "Hard",
+  "url": "https://www.geeksforgeeks.org/dsa/allocate-minimum-number-pages/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 31,
+  "topic": "Binary Search",
+  "title": "Aggressive Cows",
+  "pattern": "Binary search the minimum distance; greedily place cows",
+  "difficulty": "Hard",
+  "url": "https://www.geeksforgeeks.org/dsa/assign-stalls-to-k-cows-to-maximize-the-minimum-distance-between-them/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 32,
+  "topic": "Matrix",
+  "title": "Rotate Matrix 90 Degrees Clockwise",
+  "pattern": "Transpose, then reverse each row",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/rotate-a-matrix-by-90-degree-in-clockwise-direction-without-using-any-extra-space/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 33,
+  "topic": "Matrix",
+  "title": "Spiral Matrix Traversal",
+  "pattern": "Shrink the top, bottom, left and right boundaries",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/print-a-given-matrix-in-spiral-form/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 34,
+  "topic": "Matrix",
+  "title": "Search in a Row-wise and Column-wise Sorted Matrix",
+  "pattern": "Staircase search from a corner",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/search-element-sorted-matrix/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 35,
+  "topic": "Matrix",
+  "title": "Set Matrix Rows and Columns to Zero",
+  "pattern": "Use the first row and column as markers",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/set-matrix-rows-and-columns-to-zeroes/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 36,
+  "topic": "Recursion & Backtracking",
+  "title": "Find All Unique Subsets",
+  "pattern": "Choose or skip; handle duplicate values",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/find-all-unique-subsets-of-a-given-set/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 37,
+  "topic": "Recursion & Backtracking",
+  "title": "Generate Unique Permutations",
+  "pattern": "Backtrack with used-position tracking",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/print-all-permutations-of-a-string-with-duplicates-allowed-in-input-string/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 38,
+  "topic": "Recursion & Backtracking",
+  "title": "Combination Sum",
+  "pattern": "Backtrack while reusing allowed candidates",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/combinational-sum/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 39,
+  "topic": "Recursion & Backtracking",
+  "title": "Word Search in a Grid",
+  "pattern": "Grid DFS with mark and unmark",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/check-if-a-word-exists-in-a-grid-or-not/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 40,
+  "topic": "Recursion & Backtracking",
+  "title": "N-Queens",
+  "pattern": "Backtrack with column and diagonal constraints",
+  "difficulty": "Hard",
+  "url": "https://www.geeksforgeeks.org/dsa/n-queen-problem-backtracking-3/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 41,
+  "topic": "Stack, Queue & Deque",
+  "title": "Valid Parentheses",
+  "pattern": "Stack matching opening and closing brackets",
+  "difficulty": "Easy",
+  "url": "https://www.geeksforgeeks.org/dsa/check-for-balanced-parentheses-in-an-expression/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 42,
+  "topic": "Stack, Queue & Deque",
+  "title": "Next Greater Element",
+  "pattern": "Monotonic stack",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/next-greater-element/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 43,
+  "topic": "Stack, Queue & Deque",
+  "title": "Get Minimum from Stack",
+  "pattern": "Auxiliary minimum stack or encoded values",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/design-a-stack-that-supports-getmin-in-o1-time-and-o1-extra-space/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 44,
+  "topic": "Stack, Queue & Deque",
+  "title": "Longest Valid Parentheses Substring",
+  "pattern": "Stack of indices or dynamic programming",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/length-of-the-longest-valid-substring/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 45,
+  "topic": "Stack, Queue & Deque",
+  "title": "Largest Rectangle in a Histogram",
+  "pattern": "Monotonic increasing stack",
+  "difficulty": "Hard",
+  "url": "https://www.geeksforgeeks.org/dsa/largest-rectangular-area-in-a-histogram-using-stack/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 46,
+  "topic": "Stack, Queue & Deque",
+  "title": "Implement Queue Using an Array",
+  "pattern": "Front and rear indices; preserve FIFO order",
+  "difficulty": "Easy",
+  "url": "https://www.geeksforgeeks.org/problems/implement-queue-using-array/1",
+  "label": "Solve on GfG",
+  "direct": true
+ },
+ {
+  "n": 47,
+  "topic": "Stack, Queue & Deque",
+  "title": "Maximum of All Subarrays of Size K",
+  "pattern": "Monotonic deque",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/sliding-window-maximum-maximum-of-all-subarrays-of-size-k/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 48,
+  "topic": "Stack, Queue & Deque",
+  "title": "Longest Subarray with Absolute Difference at Most K",
+  "pattern": "Two monotonic deques track current extremes",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/longest-subarray-in-which-absolute-difference-between-any-two-element-is-not-greater-than-x/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 49,
+  "topic": "Stack, Queue & Deque",
+  "title": "Shortest Subarray with Sum at Least K",
+  "pattern": "Prefix sums and a monotonic deque",
+  "difficulty": "Hard",
+  "url": "https://www.geeksforgeeks.org/dsa/smallest-subarray-from-a-given-array-with-sum-greater-than-or-equal-to-k/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 50,
+  "topic": "Stack, Queue & Deque",
+  "title": "Implement Queue Using Stacks",
+  "pattern": "Two stacks give amortized constant-time operations",
+  "difficulty": "Easy",
+  "url": "https://www.geeksforgeeks.org/dsa/queue-using-stacks/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 51,
+  "topic": "Heap",
+  "title": "Kth Largest Element in an Array",
+  "pattern": "Size-k min-heap or quickselect",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/kth-largest-element-in-an-array/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 52,
+  "topic": "Heap",
+  "title": "Merge K Sorted Arrays",
+  "pattern": "Min-heap with the source array index",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/merge-k-sorted-arrays/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 53,
+  "topic": "Heap",
+  "title": "Top K Frequent Elements",
+  "pattern": "Frequency map plus heap or buckets",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/find-k-numbers-occurrences-given-array/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 54,
+  "topic": "Heap",
+  "title": "Merge K Sorted Linked Lists",
+  "pattern": "Min-heap of the current list heads",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/merge-k-sorted-linked-lists/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 55,
+  "topic": "Heap",
+  "title": "Find Median from a Data Stream",
+  "pattern": "Balance a max-heap and a min-heap",
+  "difficulty": "Hard",
+  "url": "https://www.geeksforgeeks.org/dsa/median-of-stream-of-integers-running-integers/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 56,
+  "topic": "Bit Manipulation",
+  "title": "Check Whether a Number Is a Power of Two",
+  "pattern": "Use the n & (n − 1) bit trick",
+  "difficulty": "Easy",
+  "url": "https://www.geeksforgeeks.org/dsa/program-to-find-whether-a-given-number-is-power-of-2/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 57,
+  "topic": "Bit Manipulation",
+  "title": "Single Number",
+  "pattern": "XOR cancels matching pairs",
+  "difficulty": "Easy",
+  "url": "https://www.geeksforgeeks.org/dsa/find-element-appears-array-every-element-appears-twice/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 58,
+  "topic": "Bit Manipulation",
+  "title": "Count Set Bits from 1 to N",
+  "pattern": "Count contributions at each bit position",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/count-total-set-bits-in-all-numbers-from-1-to-n-set-2/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 59,
+  "topic": "Bit Manipulation",
+  "title": "Find Two Numbers with Odd Occurrences",
+  "pattern": "XOR all values, then partition by a set bit",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/find-the-two-numbers-with-odd-occurences-in-an-unsorted-array/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 60,
+  "topic": "Linked List",
+  "title": "Find the Middle of a Linked List",
+  "pattern": "Slow and fast pointers",
+  "difficulty": "Easy",
+  "url": "https://www.geeksforgeeks.org/dsa/write-a-c-function-to-print-the-middle-of-the-linked-list/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 61,
+  "topic": "Linked List",
+  "title": "Reverse a Linked List",
+  "pattern": "Iterative pointer reversal",
+  "difficulty": "Easy",
+  "url": "https://www.geeksforgeeks.org/dsa/reverse-a-linked-list/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 62,
+  "topic": "Linked List",
+  "title": "Nth Node from the End",
+  "pattern": "Two pointers separated by a fixed gap",
+  "difficulty": "Easy",
+  "url": "https://www.geeksforgeeks.org/dsa/nth-node-from-the-end-of-a-linked-list/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 63,
+  "topic": "Linked List",
+  "title": "Detect a Loop in a Linked List",
+  "pattern": "Floyd slow and fast pointer cycle detection",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/detect-loop-in-a-linked-list/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 64,
+  "topic": "Linked List",
+  "title": "Reverse a Linked List in Groups",
+  "pattern": "Reverse each group iteratively or recursively",
+  "difficulty": "Hard",
+  "url": "https://www.geeksforgeeks.org/dsa/reverse-a-linked-list-in-groups-of-given-size-iterative-approach/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 65,
+  "topic": "Linked List",
+  "title": "Clone a Linked List with a Random Pointer",
+  "pattern": "Hash map or interleaved copied nodes",
+  "difficulty": "Hard",
+  "url": "https://www.geeksforgeeks.org/dsa/a-linked-list-with-next-and-arbit-pointer/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 66,
+  "topic": "Trees & BST",
+  "title": "Height of a Binary Tree",
+  "pattern": "Postorder recursion",
+  "difficulty": "Easy",
+  "url": "https://www.geeksforgeeks.org/dsa/find-the-maximum-depth-or-height-of-a-tree/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 67,
+  "topic": "Trees & BST",
+  "title": "Check Whether a Binary Tree Is Balanced",
+  "pattern": "Bottom-up height calculation with early failure",
+  "difficulty": "Easy",
+  "url": "https://www.geeksforgeeks.org/dsa/how-to-determine-if-a-binary-tree-is-balanced/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 68,
+  "topic": "Trees & BST",
+  "title": "Top View of a Binary Tree",
+  "pattern": "BFS with horizontal distance",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/print-nodes-top-view-binary-tree/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 69,
+  "topic": "Trees & BST",
+  "title": "Lowest Common Ancestor in a Binary Tree",
+  "pattern": "Postorder recursion returns target information",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/lowest-common-ancestor-binary-tree-set-1/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 70,
+  "topic": "Trees & BST",
+  "title": "Diameter of a Binary Tree",
+  "pattern": "Track height and best path in one traversal",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/diameter-of-a-binary-tree/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 71,
+  "topic": "Trees & BST",
+  "title": "Serialize and Deserialize a Binary Tree",
+  "pattern": "Preorder or BFS with null markers",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/serialize-deserialize-binary-tree/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 72,
+  "topic": "Trees & BST",
+  "title": "Construct a Tree from Inorder and Preorder",
+  "pattern": "Recursive ranges with an index map",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/construct-tree-from-given-inorder-and-preorder-traversal/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 73,
+  "topic": "Trees & BST",
+  "title": "Check Whether a Tree Is a BST",
+  "pattern": "Valid value bounds or inorder ordering",
+  "difficulty": "Easy",
+  "url": "https://www.geeksforgeeks.org/dsa/a-program-to-check-if-a-binary-tree-is-bst-or-not/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 74,
+  "topic": "Trees & BST",
+  "title": "Kth Largest Element in a BST",
+  "pattern": "Reverse inorder traversal",
+  "difficulty": "Easy",
+  "url": "https://www.geeksforgeeks.org/dsa/kth-largest-element-in-bst-when-modification-to-bst-is-not-allowed/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 75,
+  "topic": "Trees & BST",
+  "title": "BST Iterator",
+  "pattern": "Explicit stack for lazy inorder traversal",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/implement-binary-search-treebst-iterator/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 76,
+  "topic": "Greedy",
+  "title": "Gas Station (Circular Tour)",
+  "pattern": "Total surplus plus reset the candidate start",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/find-a-tour-that-visits-all-stations/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 77,
+  "topic": "Greedy",
+  "title": "Activity Selection",
+  "pattern": "Sort activities by finish time",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/activity-selection-problem-greedy-algo-1/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 78,
+  "topic": "Greedy",
+  "title": "Fractional Knapsack",
+  "pattern": "Sort by value-to-weight ratio",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/fractional-knapsack-problem/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 79,
+  "topic": "Greedy",
+  "title": "Job Sequencing with Deadlines",
+  "pattern": "Sort by profit; use the latest free slot",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/job-sequencing-problem/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 80,
+  "topic": "Greedy",
+  "title": "Huffman Coding",
+  "pattern": "Greedy merges using a min-heap",
+  "difficulty": "Hard",
+  "url": "https://www.geeksforgeeks.org/dsa/huffman-coding-greedy-algo-3/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 81,
+  "topic": "Dynamic Programming",
+  "title": "House Robber II (Circular Street)",
+  "pattern": "Solve two linear cases excluding one endpoint",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/maximum-sum-in-circular-array-such-that-no-two-elements-are-adjacent/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 82,
+  "topic": "Dynamic Programming",
+  "title": "Minimum Coins to Make a Value",
+  "pattern": "Unbounded knapsack with a minimum-cost state",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/find-minimum-number-of-coins-that-make-a-change/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 83,
+  "topic": "Dynamic Programming",
+  "title": "Coin Change (Count Ways)",
+  "pattern": "Unbounded combinations dynamic programming",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/coin-change-dp-7/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 84,
+  "topic": "Dynamic Programming",
+  "title": "Longest Increasing Subsequence",
+  "pattern": "DP or tails array with binary search",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/longest-increasing-subsequence-dp-3/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 85,
+  "topic": "Dynamic Programming",
+  "title": "Longest Common Subsequence",
+  "pattern": "Two-dimensional prefix dynamic programming",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/longest-common-subsequence-dp-4/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 86,
+  "topic": "Dynamic Programming",
+  "title": "0/1 Knapsack",
+  "pattern": "Capacity DP; iterate backward in a one-row version",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/0-1-knapsack-problem-dp-10/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 87,
+  "topic": "Dynamic Programming",
+  "title": "Partition Equal Subset Sum",
+  "pattern": "Boolean subset-sum dynamic programming",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/partition-problem-dp-18/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 88,
+  "topic": "Dynamic Programming",
+  "title": "Word Break",
+  "pattern": "Prefix DP with dictionary lookup",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/word-break-problem-dp-32/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 89,
+  "topic": "Dynamic Programming",
+  "title": "Edit Distance",
+  "pattern": "Two-dimensional insert, delete and replace DP",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/edit-distance-dp-5/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 90,
+  "topic": "Graphs",
+  "title": "Depth-First Search of a Graph",
+  "pattern": "DFS traversal with a visited set",
+  "difficulty": "Easy",
+  "url": "https://www.geeksforgeeks.org/dsa/depth-first-search-or-dfs-for-a-graph/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 91,
+  "topic": "Graphs",
+  "title": "Breadth-First Search of a Graph",
+  "pattern": "Queue traversal; process nodes by level",
+  "difficulty": "Easy",
+  "url": "https://www.geeksforgeeks.org/dsa/breadth-first-search-or-bfs-for-a-graph/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 92,
+  "topic": "Graphs",
+  "title": "Detect a Cycle in an Undirected Graph",
+  "pattern": "Track parent edges or use disjoint sets",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/detect-cycle-undirected-graph/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 93,
+  "topic": "Graphs",
+  "title": "Detect a Cycle in a Directed Graph",
+  "pattern": "Recursion-stack colors or three-state marking",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/detect-cycle-in-a-graph/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 94,
+  "topic": "Graphs",
+  "title": "Topological Sort",
+  "pattern": "DFS finishing order or Kahn indegree queue",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/topological-sorting/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 95,
+  "topic": "Graphs",
+  "title": "Dijkstra's Shortest Path Algorithm",
+  "pattern": "Priority queue with distance relaxation",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/dijkstras-shortest-path-algorithm-greedy-algo-7/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 96,
+  "topic": "Graphs",
+  "title": "Kruskal's Minimum Spanning Tree",
+  "pattern": "Sort edges and use disjoint sets",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/kruskals-minimum-spanning-tree-algorithm-greedy-algo-2/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 97,
+  "topic": "Graphs",
+  "title": "Rotten Oranges",
+  "pattern": "Multi-source BFS by time step",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/minimum-time-required-so-that-all-oranges-become-rotten/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 98,
+  "topic": "Graphs",
+  "title": "Number of Islands",
+  "pattern": "Grid DFS or BFS with visited marking",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/dsa/find-the-number-of-islands-using-dfs/",
+  "label": "Open GfG",
+  "direct": false
+ },
+ {
+  "n": 99,
+  "topic": "Tries",
+  "title": "Implement Trie (Insert and Search)",
+  "pattern": "Trie nodes represent shared prefix paths",
+  "difficulty": "Medium",
+  "url": "https://www.geeksforgeeks.org/problems/trie-insert-and-search0651/1",
+  "label": "Solve on GfG",
+  "direct": true
+ },
+ {
+  "n": 100,
+  "topic": "Tries",
+  "title": "Maximum XOR Subarray",
+  "pattern": "Prefix XOR values in a bitwise trie",
+  "difficulty": "Hard",
+  "url": "https://www.geeksforgeeks.org/dsa/find-the-maximum-subarray-xor-in-a-given-array/",
+  "label": "Open GfG",
+  "direct": false
+ }
+];
+const STATUSES = ["Not Started","In Progress","Solved","Revisit"];
+const STORAGE_KEY = "dsaTracker.progress.v1";
+
+/* ---------- Local storage (guest copy, plus a cache per signed-in account) ---------- */
+const GUEST_KEY = STORAGE_KEY;
+const store = (() => {
+  let ok = true, key = GUEST_KEY; const memory = {};
+  try { localStorage.setItem("__t","1"); localStorage.removeItem("__t"); } catch(e){ ok = false; }
+  function readKey(k){
+    if(!ok) return {...(memory[k]||{})};
+    try{ const raw = localStorage.getItem(k); return raw ? sanitize(JSON.parse(raw).progress) : {}; }
+    catch(e){ return {}; }
+  }
+  function write(p){
+    memory[key] = {...p};
+    if(!ok) return false;
+    try{ localStorage.setItem(key, JSON.stringify({version:1, updatedAt:new Date().toISOString(), progress:p})); return true; }
+    catch(e){ ok = false; return false; }
+  }
+  return {use(k){ key = k; }, read:()=>readKey(key), readGuest:()=>readKey(GUEST_KEY), write, get available(){return ok;}};
+})();
+
+function sanitize(obj){
+  const out = {}, valid = new Set(QUESTIONS.map(q=>String(q.n)));
+  if(obj && typeof obj === "object"){
+    for(const [k,v] of Object.entries(obj)){
+      if(valid.has(String(k)) && STATUSES.includes(v) && v !== "Not Started") out[k] = v;
+    }
+  }
+  return out;
+}
+
+/* ---------- Integrations: manual only. ----------
+   GfG documents no public API for checking submissions, so nothing here talks to GfG.
+   If GfG ever publishes an official, permitted integration, implement this shape and
+   add it to `integrations`; sync() should return { [trackerNo]: "Solved" } suggestions
+   that the user can review before applying. */
+const integrations = [
+  { id:"manual", label:"Manual (mark Solved yourself)", available:true, async sync(){ return {}; } }
+];
+
+/* ---------- State ---------- */
+let progress = store.read();
+const statusOf = n => progress[n] || "Not Started";
+const $ = id => document.getElementById(id);
+const sharedProfileId = new URLSearchParams(location.search).get("profile");
+if(sharedProfileId){ document.querySelector(".wrap").hidden = true; $("publicProfilePage").hidden = false; }
+let publicProfileEnabled = false;
+
+/* ---------- Render ---------- */
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+function buildRows(){
+  $("rows").innerHTML = QUESTIONS.map(q=>`
+    <div class="row" role="row" data-n="${q.n}" data-status="${esc(statusOf(q.n))}">
+      <div class="cell c-no" role="cell"><span class="k">#</span>${q.n}</div>
+      <div class="cell c-topic" role="cell"><span class="k">Topic</span>${esc(q.topic)}</div>
+      <div class="cell c-title" role="cell" data-no="${q.n}"><span class="k">Question</span>${esc(q.title)}</div>
+      <div class="cell c-pattern" role="cell"><span class="k">Pattern to learn</span>${esc(q.pattern)}</div>
+      <div class="c-meta">
+        <div class="cell" role="cell"><span class="k">Difficulty</span><span class="diff ${esc(q.difficulty)}">${esc(q.difficulty)}</span></div>
+        <div class="cell" role="cell"><span class="k">GfG link</span>
+          <a class="link" href="${esc(q.url)}" target="_blank" rel="noopener noreferrer"
+             title="${q.direct ? "Opens the GfG practice problem" : "Opens a GfG guide page — use “Try It Yourself” to reach the practice editor"}"
+             aria-label="${esc(q.label)}: ${esc(q.title)} (opens in a new tab)">${esc(q.label)} ↗</a></div>
+      </div>
+      <div class="cell" role="cell"><span class="k">Status</span>
+        <select class="status" data-n="${q.n}" aria-label="Status for question ${q.n}: ${esc(q.title)}">
+          ${STATUSES.map(s=>`<option${s===statusOf(q.n)?" selected":""}>${s}</option>`).join("")}
+        </select></div>
+    </div>`).join("");
+}
+
+function fillSelect(el, label, values){
+  el.innerHTML = `<option value="">${label}</option>` + values.map(v=>`<option>${esc(v)}</option>`).join("");
+}
+
+function applyFilters(){
+  const q = $("q").value.trim().toLowerCase();
+  const topic = $("fTopic").value, diff = $("fDiff").value, st = $("fStatus").value;
+  let shown = 0;
+  const rows = $("rows").children;
+  QUESTIONS.forEach((it,i)=>{
+    const hay = `${it.n} ${it.title} ${it.topic} ${it.pattern}`.toLowerCase();
+    const match = (!q || q.split(/\s+/).every(w=>hay.includes(w)))
+      && (!topic || it.topic===topic) && (!diff || it.difficulty===diff) && (!st || statusOf(it.n)===st);
+    rows[i].hidden = !match;
+    if(match) shown++;
+  });
+  $("empty").hidden = shown>0;
+  $("count").textContent = `Showing ${shown} of ${QUESTIONS.length} questions`;
+  document.querySelectorAll(".stat[data-filter]").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.filter===st)));
+}
+
+function updateSummary(){
+  const c = {"Not Started":0,"In Progress":0,"Solved":0,"Revisit":0};
+  QUESTIONS.forEach(q=>c[statusOf(q.n)]++);
+  const pct = Math.round(c.Solved/QUESTIONS.length*100);
+  $("nSolved").textContent=c.Solved; $("nProgress").textContent=c["In Progress"];
+  $("nRevisit").textContent=c.Revisit; $("nNot").textContent=c["Not Started"]; $("nPct").textContent=pct+"%";
+  $("bar").firstElementChild.style.width=pct+"%"; $("bar").setAttribute("aria-valuenow",pct);
+  $("barLabel").textContent=`${c.Solved} of ${QUESTIONS.length} solved`;
+}
+
+function refreshAll(){
+  document.querySelectorAll(".row").forEach(r=>{
+    const s = statusOf(r.dataset.n);
+    r.dataset.status = s; r.querySelector("select").value = s;
+  });
+  updateSummary(); applyFilters();
+}
+
+function save(){
+  const ok = store.write(progress);
+  $("storageWarn").classList.toggle("show", !ok);
+}
+
+/* ---------- Events ---------- */
+$("rows").addEventListener("change", e=>{
+  const sel = e.target.closest("select.status"); if(!sel) return;
+  const n = sel.dataset.n;
+  if(sel.value==="Not Started") delete progress[n]; else progress[n]=sel.value;
+  sel.closest(".row").dataset.status = sel.value;
+  save(); cloud.queue(n, sel.value); updateSummary(); applyFilters();
+});
+["q","fTopic","fDiff","fStatus"].forEach(id=>$(id).addEventListener(id==="q"?"input":"change", applyFilters));
+$("clear").addEventListener("click",()=>{ $("q").value=""; ["fTopic","fDiff","fStatus"].forEach(id=>$(id).value=""); applyFilters(); });
+$("stats").addEventListener("click",e=>{
+  const b = e.target.closest(".stat[data-filter]"); if(!b) return;
+  $("fStatus").value = $("fStatus").value===b.dataset.filter ? "" : b.dataset.filter; applyFilters();
+});
+
+function say(text, kind){ const m=$("msg"); m.textContent=text; m.className="msg "+(kind||""); }
+
+$("export").addEventListener("click",()=>{
+  const payload = { app:"dsa-interview-problem-tracker", version:1, exportedAt:new Date().toISOString(),
+    note:"Keys are tracker numbers from the workbook, not GeeksforGeeks problem IDs. Missing = Not Started.",
+    progress };
+  const blob = new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `dsa-progress-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  say("Progress exported.","ok");
+});
+$("importBtn").addEventListener("click",()=>$("importFile").click());
+$("importFile").addEventListener("change",async e=>{
+  const f = e.target.files[0]; e.target.value=""; if(!f) return;
+  try{
+    const data = JSON.parse(await f.text());
+    if(!data || data.app!=="dsa-interview-problem-tracker" || typeof data.progress!=="object" || data.progress===null) throw new Error("not a tracker export");
+    const next = sanitize(data.progress);
+    const skipped = Object.keys(data.progress).length - Object.keys(next).length;
+    if(!confirm(`Replace current progress with the imported file (${Object.keys(next).length} questions with a status)?`)) return say("Import cancelled.");
+    progress = next; save(); cloud.replaceAll(progress); refreshAll();
+    say(`Imported ${Object.keys(next).length} statuses.` + (skipped?` ${skipped} unrecognised entr${skipped>1?"ies were":"y was"} ignored.`:""),"ok");
+  }catch(err){ say("That file isn’t a valid progress export from this tracker.","err"); }
+});
+$("reset").addEventListener("click",()=>{
+  if(!confirm("Reset all progress to Not Started? Export first if you want a backup.")) return;
+  progress = {}; save(); cloud.replaceAll(progress); refreshAll(); say("Progress reset.");
+});
+
+
+/* ---------- Accounts: Firebase Auth + Firestore ----------
+   Paste your Firebase web-app config here (Project settings -> Your apps -> Web app).
+   These values are safe to publish: access is enforced by Auth + the Firestore rules in firestore.rules.
+   Data model:  users/{uid}                 -> the user's private profile (document id = Auth uid)
+                users/{uid}/data/progress   -> private progress map
+                publicProfiles/{uid}        -> opt-in fields only: name, bio, photo URL, progress  */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyD_PkbYQX94bGVynzHedMno8rin70C38zI",
+  authDomain: "dsa-sheet-by-anurag.firebaseapp.com",
+  projectId: "dsa-sheet-by-anurag",
+  appId: "1:333223867905:web:d515f4a4357a46e0dd3200",
+  storageBucket: "dsa-sheet-by-anurag.firebasestorage.app"   // confirm in Project settings -> General (older projects: <project-id>.appspot.com)
+};
+const FIREBASE_VERSION = "12.19.0";
+const cloudConfigured = !Object.values(FIREBASE_CONFIG).some(v => /^YOUR_|YOUR_/.test(v));
+const onHttp = /^https?:$/.test(location.protocol);
+
+let fb = null, user = null, profile = null, progressRef = null, unsubProgress = null;
+let pendingUser = null;      // signed in with email/password but email not verified yet (no account data is loaded)
+let authMode = "signin", verificationCooldownTimer = null;
+const pending = {}; let flushTimer = null, inflight = 0;
+
+function setSync(text, kind){ const el=$("syncState"); el.textContent=text||""; el.className="sync"+(kind?" "+kind:""); }
+function sameProgress(a,b){ const ka=Object.keys(a), kb=Object.keys(b); return ka.length===kb.length && ka.every(k=>a[k]===b[k]); }
+
+function setAvatar(el, url, name){
+  el.textContent = "";
+  if(url){ const img=document.createElement("img"); img.src=url; img.alt=""; img.referrerPolicy="no-referrer";
+    img.onerror=()=>{ el.textContent=initial(name); }; el.appendChild(img); }
+  else el.textContent = initial(name);
+}
+function initial(name){ return (String(name||"?").trim()[0]||"?").toUpperCase(); }
+
+function renderAuth(){
+  const name = profile?.displayName || user?.displayName || user?.email || "Account";
+  $("signInBtn").hidden = !!user; $("profileBtn").hidden = !user;
+  $("signInBtn").textContent = pendingUser ? "Verify email" : "Sign in";
+  if(user){
+    $("meName").textContent = name; setAvatar($("meAvatar"), profile?.photoURL ?? user.photoURL, name);
+    $("noticeTitle").textContent = "Signed in — progress is saved to your account and this browser.";
+  } else {
+    $("noticeTitle").textContent = pendingUser ? "Almost there — verify your email to finish creating your account."
+      : "Your progress is saved in this browser only." + (cloudConfigured && onHttp ? " Sign in to keep it across devices." : "");
+    setSync("");
+  }
+}
+
+function friendly(e){
+  const c = e && e.code || "";
+  const m = {
+    "storage/unauthorized":"Upload not allowed. Make sure Storage is set up (Blaze plan), the Storage rules are published, and your email is verified.",
+    "storage/unauthenticated":"Please sign in again and retry.",
+    "storage/canceled":"Upload cancelled.",
+    "storage/retry-limit-exceeded":"The upload timed out. Check your connection and try again.",
+    "storage/quota-exceeded":"The Storage quota for this project has been exceeded.",
+    "storage/bucket-not-found":"Storage isn’t set up for this project yet. See SETUP.md.",
+    "storage/unknown":"The upload failed. Check that Storage is enabled for this project.",
+    "auth/popup-closed-by-user":"", "auth/cancelled-popup-request":"",
+    "auth/account-exists-with-different-credential":"An account with this email already exists using a different sign-in method. Sign in with the method you used first, then connect this one from your profile.",
+    "auth/invalid-credential":"Email or password is incorrect.", "auth/wrong-password":"Email or password is incorrect.", "auth/user-not-found":"Email or password is incorrect.",
+    "auth/email-already-in-use":"An account with this email already exists. Try signing in, or use the provider you first signed up with.",
+    "auth/weak-password":"Password must be at least 6 characters.", "auth/invalid-email":"Please enter a valid email address.",
+    "auth/missing-password":"Please enter your password.", "auth/too-many-requests":"Too many attempts. Please wait a moment and try again.",
+    "auth/operation-not-allowed":"This sign-in method isn’t enabled in the Firebase console yet.",
+    "auth/unauthorized-domain":"This site’s address isn’t in Firebase’s authorized domains list.",
+    "auth/network-request-failed":"Network problem. Check your connection and try again.",
+    "auth/credential-already-in-use":"That account is already linked to a different profile.",
+    "auth/provider-already-linked":"That sign-in method is already connected.",
+    "auth/requires-recent-login":"Please sign in again and retry.",
+    "permission-denied":"Your account data couldn’t be accessed. Make sure the Firestore rules from firestore.rules are published."
+  };
+  return c in m ? m[c] : (e && e.message) || "Something went wrong.";
+}
+
+const cloud = {
+  queue(n, status){
+    if(!progressRef) return;
+    pending[n] = status; setSync("Syncing…");
+    clearTimeout(flushTimer); flushTimer = setTimeout(cloud.flush, 500);
+  },
+  async flush(){
+    if(!progressRef || !Object.keys(pending).length) return;
+    const batch = {...pending}; Object.keys(pending).forEach(k=>delete pending[k]);
+    const upd = { updatedAt: fb.serverTimestamp() };
+    for(const [k,v] of Object.entries(batch)) upd["progress."+k] = v==="Not Started" ? fb.deleteField() : v;
+    inflight++;
+    try{
+      await fb.updateDoc(progressRef, upd);
+      await refreshPublicProfileIfEnabled();
+      if(!Object.keys(pending).length) setSync("Saved to your account","ok");
+    }
+    catch(e){
+      for(const [k,v] of Object.entries(batch)) if(!(k in pending)) pending[k]=v;
+      setSync("Couldn’t reach your account — changes are kept in this browser and will retry.","err");
+      clearTimeout(flushTimer); flushTimer = setTimeout(cloud.flush, 5000);
+    } finally { inflight--; }
+  },
+  async replaceAll(p){
+    if(!progressRef) return;
+    Object.keys(pending).forEach(k=>delete pending[k]); setSync("Syncing…"); inflight++;
+    try{
+      await fb.setDoc(progressRef, { progress:p, updatedAt: fb.serverTimestamp() });
+      await refreshPublicProfileIfEnabled();
+      setSync("Saved to your account","ok");
+    }
+    catch(e){ setSync("Couldn’t save to your account: "+friendly(e),"err"); }
+    finally{ inflight--; }
+  }
+};
+
+function shareMessage(text, kind){
+  const el = $("shareMsg");
+  el.textContent = text || "";
+  el.className = "msg " + (kind || "");
+}
+function publicProfileRef(uid){ return fb.doc(fb.db,"publicProfiles",uid); }
+function publicProfileData(){
+  return {
+    displayName: String(profile?.displayName || user?.displayName || "Learner").trim().slice(0,60),
+    bio: String(profile?.bio || "").slice(0,300),
+    photoURL: profile?.photoURL ?? user?.photoURL ?? null,
+    progress: sanitize(progress),
+    updatedAt: fb.serverTimestamp()
+  };
+}
+async function writePublicProfile(){
+  await fb.setDoc(publicProfileRef(user.uid), publicProfileData());
+}
+async function syncPublicProfile(){
+  if(!publicProfileEnabled || !user) return;
+  await writePublicProfile();
+}
+async function refreshPublicProfileIfEnabled(){
+  if(!publicProfileEnabled) return;
+  try{ await syncPublicProfile(); }
+  catch(e){ shareMessage("Your account saved the change, but the shared profile could not refresh. Please try again later.","err"); }
+}
+function updateShareControls(){
+  if(!user) return;
+  const enabled = publicProfileEnabled;
+  $("shareEnable").hidden = enabled;
+  $("shareCopy").hidden = !enabled;
+  $("shareDisable").hidden = !enabled;
+  $("shareLinkWrap").hidden = !enabled;
+  if(!enabled) return;
+  const url = new URL(location.pathname,location.origin);
+  url.searchParams.set("profile",user.uid);
+  $("shareLink").value = url.href;
+  const localOnly = ["localhost","127.0.0.1"].includes(location.hostname);
+  $("shareCopy").disabled = localOnly;
+  if(localOnly) shareMessage("This address is localhost and only works on your computer. Publish the tracker first, then copy the link from its public website.");
+}
+function renderSharedProfile(data){
+  $("publicStats").hidden = false; $("publicBar").hidden = false; $("publicProgressLabel").hidden = false; $("publicWorkCard").hidden = false;
+  const displayName = String(data.displayName || "DSA Tracker learner");
+  const sharedProgress = sanitize(data.progress);
+  const counts = {"Solved":0,"In Progress":0,"Revisit":0};
+  Object.values(sharedProgress).forEach(status=>{ if(status in counts) counts[status]++; });
+  const notStarted = QUESTIONS.length - Object.keys(sharedProgress).length;
+  const percent = Math.round(counts.Solved / QUESTIONS.length * 100);
+  $("publicName").textContent = displayName;
+  setAvatar($("publicAvatar"), data.photoURL || null, displayName);
+  const bio = String(data.bio || "").trim();
+  $("publicBio").textContent = bio;
+  $("publicBio").hidden = !bio;
+  $("publicSolved").textContent = counts.Solved;
+  $("publicInProgress").textContent = counts["In Progress"];
+  $("publicRevisit").textContent = counts.Revisit;
+  $("publicNotStarted").textContent = notStarted;
+  $("publicPercent").textContent = percent + "%";
+  $("publicBar").value = percent;
+  $("publicProgressLabel").textContent = `${counts.Solved} of ${QUESTIONS.length} questions marked solved`;
+  const solved = QUESTIONS.filter(q=>sharedProgress[q.n]==="Solved");
+  const list = $("publicSolvedList"); list.replaceChildren();
+  solved.forEach(q=>{
+    const li = document.createElement("li");
+    const a = document.createElement("a"); a.href=q.url; a.target="_blank"; a.rel="noopener noreferrer"; a.textContent=q.title;
+    const small = document.createElement("small"); small.textContent=`${q.topic} · ${q.difficulty} · ${q.pattern}`;
+    li.append(a,small); list.appendChild(li);
+  });
+  $("publicSolvedEmpty").hidden = solved.length > 0;
+  $("publicNotice").textContent = "";
+  document.title = `${displayName} | DSA Interview Problem Tracker`;
+}
+function sharedProfileUnavailable(message){
+  $("publicName").textContent = "Profile unavailable";
+  $("publicBio").hidden = true;
+  $("publicStats").hidden = true; $("publicBar").hidden = true; $("publicProgressLabel").hidden = true; $("publicWorkCard").hidden = true;
+  $("publicNotice").textContent = message;
+}
+async function loadSharedProfile(){
+  if(!/^[A-Za-z0-9_-]{1,128}$/.test(sharedProfileId || ""))
+    return sharedProfileUnavailable("This profile link is invalid.");
+  try{
+    const snap = await fb.getDoc(publicProfileRef(sharedProfileId));
+    if(!snap.exists()) return sharedProfileUnavailable("This profile is not available. Its owner may have turned off sharing.");
+    renderSharedProfile(snap.data());
+  }catch(e){ sharedProfileUnavailable("This profile could not be loaded. Please check the link and try again."); }
+}
+
+async function ensureProfile(u){
+  const ref = fb.doc(fb.db,"users",u.uid);       // doc id = uid -> exactly one profile per user
+  let snap = await fb.getDoc(ref);
+  if(!snap.exists()){
+    await fb.setDoc(ref, {
+      displayName: initialName(u).slice(0,60),
+      bio: "", photoURL: u.photoURL || null, email: u.email || null,
+      createdAt: fb.serverTimestamp(), updatedAt: fb.serverTimestamp()
+    });
+    snap = await fb.getDoc(ref);
+  }
+  profile = snap.data();
+}
+
+async function startProgressSync(u){
+  progressRef = fb.doc(fb.db,"users",u.uid,"data","progress");
+  const snap = await fb.getDoc(progressRef);
+  const remote = snap.exists() ? sanitize(snap.data().progress) : {};
+  const extra = Object.keys(store.readGuest()).filter(k=>!(k in remote));
+  let start = remote;
+  if(extra.length && confirm(`Add the ${extra.length} question status${extra.length>1?"es":""} saved in this browser (while signed out) to your account?`))
+    start = {...store.readGuest(), ...remote};
+  if(!snap.exists() || start!==remote) await fb.setDoc(progressRef, { progress:start, updatedAt: fb.serverTimestamp() });
+  progress = start; store.write(progress); refreshAll();
+  unsubProgress = fb.onSnapshot(progressRef, s=>{
+    if(s.metadata.hasPendingWrites || inflight || Object.keys(pending).length || !s.exists()) return;
+    const r = sanitize(s.data().progress);
+    if(!sameProgress(r, progress)){ progress = r; store.write(r); refreshAll(); refreshPublicProfileIfEnabled(); }
+  });
+  setSync("Saved to your account","ok");
+}
+
+async function onAuthChanged(u){
+  if(unsubProgress){ unsubProgress(); unsubProgress = null; }
+  user = null; pendingUser = null; profile = null; progressRef = null;
+  publicProfileEnabled = false;
+  Object.keys(pending).forEach(k=>delete pending[k]);
+  if(!u){
+    store.use(GUEST_KEY); progress = store.read(); refreshAll(); renderAuth(); showAuthMain(); clearVerificationCooldown(); return;
+  }
+  if(isUnverifiedPassword(u)){   // email/password account whose email isn't verified: no profile or progress access yet
+    pendingUser = u; store.use(GUEST_KEY); progress = store.read(); refreshAll(); renderAuth(); showVerify(); return;
+  }
+  user = u;
+  store.use(GUEST_KEY+"."+u.uid); progress = store.read(); refreshAll();   // show cached copy instantly
+  renderAuth(); closeDlg($("authDlg")); showAuthMain();
+  try{
+    await ensureProfile(u); renderAuth(); await startProgressSync(u);
+  }
+  catch(e){ setSync("Signed in, but account data couldn’t load: "+friendly(e),"err"); }
+  try{
+    const publicSnap = await fb.getDoc(publicProfileRef(u.uid));
+    publicProfileEnabled = publicSnap.exists();
+    updateShareControls();
+    await refreshPublicProfileIfEnabled();
+  }catch(e){
+    publicProfileEnabled = false;
+    if(e?.code==="permission-denied") shareMessage("Publish the updated Firestore rules to turn on recruiter profile sharing.","err");
+  }
+}
+
+async function initCloud(){
+  if(!cloudConfigured || !onHttp){
+    if(sharedProfileId) sharedProfileUnavailable("This profile could not be opened here. Please use the published website link.");
+    return;
+  }
+  try{
+    const base = `https://www.gstatic.com/firebasejs/${FIREBASE_VERSION}/`;
+    const [appM, authM, fsM, stM] = await Promise.all([import(base+"firebase-app.js"), import(base+"firebase-auth.js"), import(base+"firebase-firestore.js"), import(base+"firebase-storage.js")]);
+    const app = appM.initializeApp(FIREBASE_CONFIG);
+    fb = {...authM, ...fsM, ...stM, auth: authM.getAuth(app), db: fsM.getFirestore(app)};
+    try{ fb.storage = stM.getStorage(app); }catch(e){ fb.storage = null; }
+    if(sharedProfileId){ loadSharedProfile(); return; }
+    fb.getRedirectResult(fb.auth).catch(e=>{ const t=friendly(e); if(t){ openDlg($("authDlg")); authMsg(t,"err"); } });
+    fb.onAuthStateChanged(fb.auth, onAuthChanged);
+  }catch(e){
+    fb = null; $("signInBtn").disabled = false;
+    if(sharedProfileId) sharedProfileUnavailable("This profile could not be loaded. Please check your connection and try again.");
+    cloudConfigured && ($("authSetupWhy").textContent = "The sign-in service couldn’t be loaded (offline or blocked).");
+  }
+}
+
+/* ---------- Dialogs ---------- */
+function openDlg(d){ if(!d.open) d.showModal(); }
+function closeDlg(d){ if(d.open) d.close(); }
+document.querySelectorAll("dialog [data-close]").forEach(b=>b.addEventListener("click",()=>closeDlg(b.closest("dialog"))));
+document.querySelectorAll("dialog").forEach(d=>d.addEventListener("click",e=>{
+  // Keep the sign-in dialog open if the user clicks outside it (including a password-manager popup).
+  if(e.target===d && d.id!=="authDlg") d.close();
+}));
+function authMsg(t,k){ const m=$("authMsg"); m.textContent=t||""; m.className="msg "+(k||""); }
+
+$("signInBtn").addEventListener("click",()=>{
+  authMsg("");
+  if(pendingUser && fb){ showVerify(); openDlg($("authDlg")); return; }
+  const usable = !!fb; showAuthMain();
+  $("authMain").hidden = !usable; $("authSetup").hidden = usable;
+  if(!usable){
+    $("authSetupWhy").textContent = !cloudConfigured ? "The site owner still needs to add a Firebase configuration."
+      : !onHttp ? "Sign-in only works when the page is served over http(s), not opened as a local file — see the setup notes."
+      : ($("authSetupWhy").textContent || "");
+  }
+  openDlg($("authDlg"));
+});
+
+async function run(fn, msgEl){
+  try{ await fn(); } catch(e){ const t=friendly(e); if(t) (msgEl||authMsg)(t,"err"); }
+}
+async function signInWith(id){
+  const provider = id==="google" ? new fb.GoogleAuthProvider() : new fb.GithubAuthProvider();
+  if(id==="github") provider.addScope("user:email");
+  try{ await fb.signInWithPopup(fb.auth, provider); }
+  catch(e){ if(e.code==="auth/popup-blocked"){ await fb.signInWithRedirect(fb.auth, provider); return; } throw e; }
+}
+$("gGoogle").addEventListener("click",()=>run(()=>signInWith("google")));
+$("gGithub").addEventListener("click",()=>run(()=>signInWith("github")));
+
+const creds = () => ({ email:$("authEmail").value.trim(), pass:$("authPass").value });
+$("emailForm").addEventListener("submit",e=>{ e.preventDefault(); const {email,pass}=creds();
+  if(authMode==="signup") run(doSignup);
+  else run(()=>fb.signInWithEmailAndPassword(fb.auth,email,pass)); });   // unverified accounts are routed to the code step by onAuthChanged
+$("emailUp").addEventListener("click",()=>setAuthMode(authMode==="signup" ? "signin" : "signup"));
+$("forgot").addEventListener("click",()=>{ const {email}=creds();
+  if(!email) return authMsg("Enter your email above first, then tap “Forgot password?”.","err");
+  run(async()=>{ await fb.sendPasswordResetEmail(fb.auth,email); authMsg("If an account exists for that email, a reset link is on its way.","ok"); }); });
+
+/* ---------- Profile ---------- */
+function profMsg(t,k){ const m=$("profMsg"); m.textContent=t||""; m.className="msg "+(k||""); }
+function renderMethods(){
+  const ul = $("methods"); ul.textContent = "";
+  const names = {"google.com":"Google","github.com":"GitHub","password":"Email & password"};
+  const have = new Set(user.providerData.map(p=>p.providerId));
+  have.forEach(id=>{ const li=document.createElement("li"); li.textContent = "✓ "+(names[id]||id); ul.appendChild(li); });
+  [["google.com","Google"],["github.com","GitHub"]].filter(([id])=>!have.has(id)).forEach(([id,label])=>{
+    const li=document.createElement("li"); const s=document.createElement("span"); s.textContent=label+" — not connected";
+    const b=document.createElement("button"); b.type="button"; b.className="btn"; b.textContent="Connect";
+    b.addEventListener("click",()=>run(async()=>{
+      await fb.linkWithPopup(user, id==="google" ? new fb.GoogleAuthProvider() : new fb.GithubAuthProvider());
+      renderMethods(); profMsg(label+" connected.","ok");
+    }, profMsg));
+    li.append(s,b); ul.appendChild(li);
+  });
+}
+$("profileBtn").addEventListener("click",()=>{
+  if(!user) return; profMsg("");
+  shareMessage(""); updateShareControls();
+  const name = profile?.displayName || user.displayName || "";
+  $("profName").value = name; $("profBio").value = profile?.bio || ""; $("bioCount").textContent = $("profBio").value.length;
+  $("profEmail").textContent = user.email || "No email on this sign-in";
+  setAvatar($("profAvatar"), profile?.photoURL ?? user.photoURL, name);
+  const pw = user.providerData.some(p=>p.providerId==="password");
+  $("profVerify").textContent = pw && !user.emailVerified ? "Email not verified — check your inbox." : "";
+  renderMethods(); picReset(); openDlg($("profileDlg"));
+});
+$("profBio").addEventListener("input",()=>{ $("bioCount").textContent = $("profBio").value.length; });
+$("profForm").addEventListener("submit",e=>{ e.preventDefault();
+  const displayName = $("profName").value.trim(), bio = $("profBio").value.trim();
+  if(!displayName || displayName.length>60) return profMsg("Display name must be 1–60 characters.","err");
+  if(bio.length>300) return profMsg("About you must be 300 characters or fewer.","err");
+  run(async()=>{
+    await fb.updateDoc(fb.doc(fb.db,"users",user.uid), { displayName, bio, updatedAt: fb.serverTimestamp() });
+    fb.updateProfile(user,{displayName}).catch(()=>{});   // keep the Auth display name in step
+    profile = {...profile, displayName, bio}; renderAuth(); await refreshPublicProfileIfEnabled(); profMsg("Profile saved.","ok");
+  }, profMsg);
+});
+$("shareEnable").addEventListener("click",async()=>{
+  shareMessage("Enabling profile sharing…");
+  try{
+    await writePublicProfile();
+    publicProfileEnabled = true; updateShareControls();
+    const localOnly = ["localhost","127.0.0.1"].includes(location.hostname);
+    shareMessage(localOnly
+      ? "Sharing is on, but this localhost link only works on your computer. Publish the tracker, then copy the link from its public website."
+      : "Sharing is on. Anyone with this link can view your profile; turn it off here anytime.","ok");
+  }catch(e){
+    shareMessage(e?.code==="permission-denied"
+      ? "Firebase needs the updated Firestore rules before profile sharing can be enabled."
+      : friendly(e),"err");
+  }
+});
+$("shareCopy").addEventListener("click",async()=>{
+  const input = $("shareLink");
+  try{
+    if(navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(input.value);
+    else { input.focus(); input.select(); if(!document.execCommand("copy")) throw new Error("copy unavailable"); }
+    shareMessage("Recruiter link copied.","ok");
+  }catch(e){ input.focus(); input.select(); shareMessage("Select the link above and copy it."); }
+});
+$("shareDisable").addEventListener("click",async()=>{
+  if(!confirm("Turn off profile sharing? Anyone with the old link will no longer be able to view it.")) return;
+  shareMessage("Turning off sharing…");
+  try{
+    await fb.deleteDoc(publicProfileRef(user.uid));
+    publicProfileEnabled = false; updateShareControls(); shareMessage("Profile sharing is off. The old link no longer works.","ok");
+  }catch(e){ shareMessage(friendly(e),"err"); }
+});
+$("signOut").addEventListener("click",()=>run(async()=>{
+  clearTimeout(flushTimer); await cloud.flush();
+  closeDlg($("profileDlg")); await fb.signOut(fb.auth);
+}, profMsg));
+
+/* ---------- Email sign-up: required name + Firebase verification link ---------- */
+let signupName = "";
+const isUnverifiedPassword = u => !!u && !u.emailVerified && u.providerData.length>0 && u.providerData.every(p=>p.providerId==="password");
+const cleanName = v => String(v||"").replace(/\s+/g," ").trim();
+function initialName(u){
+  const own = cleanName(u.displayName);                         // names supplied by Google/GitHub/etc. are kept
+  if(own) return own;
+  if(u.providerData.every(p=>p.providerId==="password")) return cleanName(signupName) || "Learner";   // never the email username
+  return (u.email||"").split("@")[0] || "Learner";
+}
+function setAuthMode(m, quiet){
+  authMode = m; const up = m==="signup";
+  $("nameRow").hidden = !up;
+  $("emailIn").textContent = up ? "Create account" : "Sign in";
+  $("emailUp").textContent = up ? "Back to sign in" : "Create account";
+  $("forgot").hidden = up;
+  $("authPass").autocomplete = up ? "new-password" : "current-password";
+  $("authTitle").textContent = up ? "Create account" : "Sign in";
+  if(!quiet){ authMsg(""); if(up) $("authName").focus(); }
+}
+function showAuthMain(){
+  $("authVerify").hidden = true; $("authMain").hidden = false; $("authLead").hidden = false; setAuthMode(authMode, true);
+}
+function showVerify(){
+  if(!pendingUser) return;
+  $("authMain").hidden = true; $("authSetup").hidden = true; $("authVerify").hidden = false; $("authLead").hidden = true;
+  $("authTitle").textContent = "Verify your email";
+  $("verifyLead").textContent = `Send a verification link to ${pendingUser.email}, open it from your inbox, then come back here and click “I clicked the link”. Check spam or junk if you don’t see it.`;
+}
+function clearVerificationCooldown(){
+  clearTimeout(verificationCooldownTimer); verificationCooldownTimer = null;
+  const b = $("verifyResend"); if(b){ b.disabled = false; b.textContent = "Send verification link"; }
+}
+function startVerificationCooldown(){
+  clearVerificationCooldown(); const b = $("verifyResend"); if(!b) return;
+  let left = 60;
+  const tick = ()=>{
+    if(left<=0){ verificationCooldownTimer = null; b.disabled = false; b.textContent = "Resend verification link"; return; }
+    b.disabled = true; b.textContent = `Resend link in ${left}s`; left--;
+    verificationCooldownTimer = setTimeout(tick, 1000);
+  };
+  tick();
+}
+async function sendVerificationLink(u=fb.auth.currentUser){
+  if(!u) return;
+  const b = $("verifyResend"); b.disabled = true; authMsg("Sending verification link…");
+  try{
+    await fb.sendEmailVerification(u);
+    authMsg(`Firebase sent a verification link to ${u.email}. Open it, then return here and click “I clicked the link”.`,"ok");
+    startVerificationCooldown();
+  }catch(e){
+    b.disabled = false;
+    throw e;
+  }
+}
+async function doSignup(){
+  const name = cleanName($("authName").value), {email,pass} = creds();
+  if(name.length<1 || name.length>60) return authMsg("Please enter your name (1–60 characters).","err");
+  if(!email) return authMsg("Please enter a valid email address.","err");
+  $("emailIn").disabled = true; authMsg("Creating your account…");
+  try{
+    let cred;
+    try{ cred = await fb.createUserWithEmailAndPassword(fb.auth,email,pass); }
+    catch(e){
+      if(e.code!=="auth/email-already-in-use") throw e;
+      // An account already exists: sign in with the same password instead of creating a duplicate.
+      // If it is still unverified, send the Firebase verification link again.
+      let existing;
+      try{ existing = await fb.signInWithEmailAndPassword(fb.auth,email,pass); }
+      catch(e2){ return authMsg("An account with this email already exists. Sign in instead, or use “Forgot password?”.","err"); }
+      if(isUnverifiedPassword(existing.user)) return await sendVerificationLink(existing.user);
+      return authMsg("This email already has an account — you’re signed in.");
+    }
+    signupName = name;
+    await fb.updateProfile(cred.user,{displayName:name}).catch(()=>{});   // Firebase Auth display name
+    await sendVerificationLink(cred.user);
+  } finally { $("emailIn").disabled = false; }
+}
+$("verifyResend").addEventListener("click",()=>run(()=>sendVerificationLink()));
+$("verifyForm").addEventListener("submit",e=>{ e.preventDefault(); run(async()=>{
+  const u = fb.auth.currentUser; if(!u) return;
+  $("verifyCheck").disabled = true; authMsg("Checking whether your email is verified…");
+  try{
+    if(!u.displayName && signupName) await fb.updateProfile(u,{displayName:signupName}).catch(()=>{});
+    await u.reload();
+    if(!u.emailVerified) return authMsg("Firebase hasn’t marked this email verified yet. Open the verification link from your inbox, then try again.","err");
+    await u.getIdToken(true);                              // refresh the email_verified claim for Firestore/Storage rules
+    authMsg(""); clearVerificationCooldown();
+    await onAuthChanged(u);                                // now load profile + progress
+  } finally { $("verifyCheck").disabled = false; }
+}); });
+$("verifyOut").addEventListener("click",()=>run(async()=>{ clearVerificationCooldown(); await fb.signOut(fb.auth); }));
+
+/* ---------- Profile picture (Cloud Storage path: profile-images/<uid>/avatar) ---------- */
+const PIC_TYPES = ["image/jpeg","image/png","image/webp"], PIC_MAX = 5*1024*1024;
+let picBlob = null, picPreviewUrl = null;
+const curName = () => profile?.displayName || user?.displayName || "";
+const curPhoto = () => profile?.photoURL ?? user?.photoURL ?? null;
+function picReset(){
+  if(picPreviewUrl){ URL.revokeObjectURL(picPreviewUrl); picPreviewUrl = null; }
+  picBlob = null; $("picProg").hidden = true; $("picProg").value = 0;
+  if(!user) return;
+  const has = !!curPhoto();
+  $("picChange").hidden = false; $("picChange").textContent = has ? "Change photo" : "Upload photo";
+  $("picRemove").hidden = !has; $("picSave").hidden = true; $("picCancel").hidden = true;
+  $("picSave").disabled = false; $("picCancel").disabled = false;
+  setAvatar($("profAvatar"), curPhoto(), curName());
+}
+function toSquareJpeg(file){           // centre-crop to a square, max 512px, re-encode as JPEG
+  return new Promise((resolve,reject)=>{
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = ()=>{
+      try{
+        const s = Math.min(img.naturalWidth, img.naturalHeight), size = Math.min(512, s);
+        const c = document.createElement("canvas"); c.width = c.height = size;
+        const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0,0,size,size);
+        g.drawImage(img,(img.naturalWidth-s)/2,(img.naturalHeight-s)/2,s,s,0,0,size,size);
+        c.toBlob(b=>{ URL.revokeObjectURL(url); b ? resolve(b) : reject(new Error("Couldn’t process that image.")); },"image/jpeg",0.9);
+      }catch(e){ URL.revokeObjectURL(url); reject(e); }
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); reject(new Error("That file couldn’t be read as an image.")); };
+    img.src = url;
+  });
+}
+$("picChange").addEventListener("click",()=>{
+  if(!fb || !fb.storage) return profMsg("Profile pictures need Cloud Storage to be set up. See SETUP.md.","err");
+  $("picFile").click();
+});
+$("picFile").addEventListener("change",async e=>{
+  const f = e.target.files[0]; e.target.value = ""; if(!f || !user) return; profMsg("");
+  if(!PIC_TYPES.includes(f.type)) return profMsg("Please choose a JPG, PNG or WebP image.","err");
+  if(f.size > PIC_MAX) return profMsg("That image is larger than 5 MB.","err");
+  try{
+    const blob = await toSquareJpeg(f);
+    picReset(); picBlob = blob; picPreviewUrl = URL.createObjectURL(blob);
+    setAvatar($("profAvatar"), picPreviewUrl, curName());             // preview before saving
+    $("picSave").hidden = false; $("picCancel").hidden = false; $("picChange").hidden = true; $("picRemove").hidden = true;
+    profMsg("Preview — choose “Save photo” to upload it.");
+  }catch(err){ profMsg(err.message || "Couldn’t read that image.","err"); }
+});
+$("picCancel").addEventListener("click",()=>{ picReset(); profMsg(""); });
+$("picSave").addEventListener("click",()=>run(async()=>{
+  if(!picBlob || !user) return;
+  if(!fb.storage) throw new Error("Profile pictures need Cloud Storage to be set up. See SETUP.md.");
+  const prog = $("picProg"); $("picSave").disabled = true; $("picCancel").disabled = true; prog.hidden = false; prog.value = 0;
+  try{
+    const r = fb.ref(fb.storage, `profile-images/${user.uid}/avatar`);
+    const task = fb.uploadBytesResumable(r, picBlob, {contentType:"image/jpeg", cacheControl:"public,max-age=3600"});
+    await new Promise((res,rej)=>task.on("state_changed", s=>{ prog.value = Math.round(s.bytesTransferred/s.totalBytes*100); profMsg(`Uploading… ${prog.value}%`); }, rej, res));
+    const url = (await fb.getDownloadURL(r)) + "&v=" + Date.now();      // cache-buster so the new image shows at once
+    await fb.updateDoc(fb.doc(fb.db,"users",user.uid), { photoURL:url, updatedAt: fb.serverTimestamp() });
+    fb.updateProfile(user,{photoURL:url}).catch(()=>{});
+    profile = {...profile, photoURL:url}; await refreshPublicProfileIfEnabled();
+  } finally { $("picSave").disabled = false; $("picCancel").disabled = false; }
+  picReset(); renderAuth(); profMsg("Profile picture updated.","ok");
+}, profMsg));
+$("picRemove").addEventListener("click",()=>run(async()=>{
+  if(!user || !confirm("Remove your profile picture?")) return;
+  const url = curPhoto() || "";
+  if(fb.storage && /firebasestorage|appspot\.com/.test(url)){
+    try{ await fb.deleteObject(fb.ref(fb.storage, `profile-images/${user.uid}/avatar`)); }
+    catch(e){ if(e.code!=="storage/object-not-found") throw e; }
+  }
+  await fb.updateDoc(fb.doc(fb.db,"users",user.uid), { photoURL:null, updatedAt: fb.serverTimestamp() });
+  await fb.updateProfile(user,{photoURL:null}).catch(()=>{});
+  profile = {...profile, photoURL:null}; await refreshPublicProfileIfEnabled(); picReset(); renderAuth(); profMsg("Profile picture removed.","ok");
+}, profMsg));
+
+/* ---------- Init ---------- */
+fillSelect($("fTopic"),"All topics",[...new Set(QUESTIONS.map(q=>q.topic))]);
+fillSelect($("fDiff"),"All difficulties",["Easy","Medium","Hard"]);
+fillSelect($("fStatus"),"All statuses",STATUSES);
+buildRows(); updateSummary(); applyFilters();
+if(!store.available) $("storageWarn").classList.add("show");
+renderAuth(); initCloud();
+</script>
+</body>
+</html>
